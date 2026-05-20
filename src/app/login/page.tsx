@@ -13,7 +13,7 @@ const login = () => {
     const handleLogin = () => {
         console.log("Login clicked");
         setTimeout(() => {
-            router.push("/");
+            router.push("/dashboard");
         }, 1000);
 
     }

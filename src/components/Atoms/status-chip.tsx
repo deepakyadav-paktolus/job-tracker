@@ -15,7 +15,7 @@ const StatusChip = ({ status }: StatusChipProps) => {
       status === 'Others' && 'bg-gray-100 text-gray-800'
     )
   return (
-    <span className={clsx("px-2 py-1 text-xs rounded-xl", statusClass)}>
+    <span className={clsx("px-2 py-1 text-xs rounded-md", statusClass)}>
       {status}
     </span>
   )

@@ -13,10 +13,10 @@ const SignUp = () => {
     const handleSignUp = () => {
         console.log("SignUp clicked");
         setTimeout(() => {
-            router.push("/");
+            router.push("/dashboard");
         }, 1000);
     }
-    
+
     return (
         <>
             <div className="h-screen w-screen flex items-center justify-start">
