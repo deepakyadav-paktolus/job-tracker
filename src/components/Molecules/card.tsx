@@ -1,36 +1,79 @@
-'use client'
-import StatusChip from "../Atoms/status-chip"
-import Badge from "../Atoms/badge"
-import { Bookmark, BookmarkCheck } from "lucide-react"
-import { useState } from "react"
+"use client";
 
-const Card = () => {
-    const [bookmarkd, setbookmarkd] = useState(false)
+import { useState } from "react";
+import { Bookmark } from "lucide-react";
+
+import StatusChip from "../Atoms/status-chip";
+
+type Status = "Applied" | "Interview" | "Rejected" | "Ghosted" | "Offered";
+
+type CardProps = {
+    companyName: string;
+    jobTitle: string;
+    salary?: string;
+    description?: string;
+    status: Status;
+    time?: string;
+};
+
+const Card = ({
+    companyName,
+    jobTitle,
+    salary,
+    description,
+    status,
+    time,
+}: CardProps) => {
+    const [bookmarked, setBookmarked] = useState(false);
+
     return (
-        <>
-            <div className="h-50 w-70 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <div className="p-4">
-
-                    <div className="flex items-center gap-2 relative">
-                        <span className="h-8 w-8 bg-blue-500 dark:bg-blue-600 text-white rounded-full text-xl flex items-center justify-center">C</span>
-                        <span onClick={() => setbookmarkd(!bookmarkd)} className="absolute top-1 right-1 rounded-full">  {bookmarkd ? <Bookmark className="fill-foreground" /> : <Bookmark />}</span>
-                        <h1 className="text-lg font-semibold">Company Name</h1>
+        <div
+            className="w-72 rounded-xl border bg-white dark:bg-gray-800 p-4 shadow-sm hover:shadow-md transition cursor-pointer">
+            <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
+                        {companyName.charAt(0).toUpperCase()}
                     </div>
-                    <h3 className="text-lg font-semibold">Job Title</h3>
-                    <p>Salary: $100,000</p>
-                    <p className="text-gray-600 dark:text-gray-400 text-md font-light whitespace-nowrap overflow-hidden text-ellipsis">Job description Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dicta facere itaque quo ut aspernatur illum. Est </p>
-                    <StatusChip status="Applied" />
-                    {/* <div className="flex flex-wrap gap-2">  <Badge badge="Applied" />
-            <Badge badge="Shortlisted" />
-            <Badge badge="Rejected" />
-            <Badge badge="Interview" />
-            <Badge badge="Offer" />
-            <Badge badge="Accepted" /></div> */}
-                    <p className="text-gray-600 dark:text-gray-400 text-sm font-light">Time: 2 hours ago</p>
-                </div>
-            </div>
-        </>
-    )
-}
 
-export default Card
+                    <div>
+                        <h2 className="font-semibold text-sm">{companyName}</h2>
+                        <p className="text-xs text-gray-500">{jobTitle}</p>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => setBookmarked(!bookmarked)}
+                    className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                    <Bookmark
+                        className={`w-5 h-5 ${bookmarked ? "fill-yellow-400 text-yellow-400" : ""}`}
+                    />
+                </button>
+            </div>
+
+            {description && (
+                <p className="mt-3 text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                    {description}
+                </p>
+            )}
+
+            <div className="mt-4 flex items-center justify-between">
+                <StatusChip status={status} />
+
+                {salary && (
+                    <span className="text-xs font-medium text-green-600">
+                        {salary}
+                    </span>
+                )}
+            </div>
+
+            {time && (
+                <p className="mt-2 text-[10px] text-gray-400">
+                    {time}
+                </p>
+            )}
+        </div>
+    );
+};
+
+export default Card;

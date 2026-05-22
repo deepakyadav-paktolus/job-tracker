@@ -11,48 +11,11 @@ const Dashboard = () => {
    <div className="">Sidebar</div>
    {/* <Card /> */}
    <div className="flex gap-6 flex-wrap p-4 justify-center">
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
+   {
+    Array.from({ length: 20 }).map((_, index) => (
+      <Card key={index} companyName={`Company ${index + 1}`} jobTitle={`Job Title ${index + 1}`} salary={`$${(index + 1) * 1000}`} description={`Job description ${index + 1}`} status="Applied" time="2 hours ago" />
+    ))
+   }
    </div>
    </>
   )

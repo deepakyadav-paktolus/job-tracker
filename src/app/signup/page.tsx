@@ -3,19 +3,33 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
+import { trpc } from "../../utils/trpc";
 
-const schema = {
-    email: "",
-    password: "",
-}
+
 const SignUp = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const ispasswordEqual = password === confirmPassword;
     const router = useRouter()
-    const handleSignUp = () => {
-        console.log("SignUp clicked");
-        setTimeout(() => {
-            router.push("/dashboard");
-        }, 1000);
-    }
+ 
+    const signupMutation = trpc.auth.signup.useMutation();
+    const isLoading = signupMutation.isPending;
+    const handleSignUp = async() => {
+      if(!ispasswordEqual){
+          return
+      }try {
+        console.log(email)
+         await signupMutation.mutateAsync({
+            email,
+            password
+        })
+        router.push('/dashboard')
+       } catch (error) {
+        console.log('error', error)
+       }
+    } 
 
     return (
         <>
@@ -35,12 +49,12 @@ const SignUp = () => {
                         <h2 className="text-lg text-gray-600">Track progress from application to offer.</h2></div>
                         <div className="flex flex-col text-black">
                             <label className="mb-2">Email</label>
-                            <Input type="text" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Email" />
+                            <Input type="text" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Email" onChange={(e)=> setEmail(e.target.value)} />
                             <label className="mb-2">Password</label>
-                            <Input type="password" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Password" />
+                            <Input type="password" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Password" onChange={(e)=> setPassword(e.target.value)} />
                             <label className="mb-2">Confirm Password</label>
-                            <Input type="password" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Confirm Password" />
-                            <Button className="w-full " onClick={handleSignUp}>SignUp</Button>
+                            <Input type="password" className="border-gray-300 focus:border-gray-600 mb-4" placeholder="Confirm Password" onChange={(e)=> setConfirmPassword(e.target.value)} />
+                            <Button className="w-full "  disabled={!ispasswordEqual || isLoading} onClick={handleSignUp}> {isLoading ? "Signing up..." : "Sign Up"}</Button>
                         </div>
                     </div>
                     <div className="flex justify-center items-center mt-4">

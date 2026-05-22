@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
-
+import Providers from "./providers";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
+    <html suppressHydrationWarning
       lang="en"
       className={`${inter.className} h-full antialiased`}
     >
@@ -32,7 +32,7 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        {children}
+       <Providers>{children}</Providers>
         <Toaster />
       </ThemeProvider></body>
     </html>
