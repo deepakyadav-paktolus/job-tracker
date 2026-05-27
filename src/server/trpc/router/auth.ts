@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { cookies } from "next/headers";
 import { TRPCError } from "@trpc/server";
-
 import { router, publicProcedure } from "../../trpc";
-
 import { db } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/auth";
 
@@ -11,7 +9,7 @@ export const authRouter = router({
   signup: publicProcedure
     .input(
       z.object({
-        email: z.string().email(),
+        email: z.email(),
         password: z.string().min(6),
       })
     )
@@ -48,7 +46,7 @@ export const authRouter = router({
   login: publicProcedure
     .input(
       z.object({
-        email: z.string().email(),
+        email: z.email(),
         password: z.string(),
       })
     )
@@ -78,16 +76,13 @@ export const authRouter = router({
         });
       }
 
-      // Create DB session
       const session = await db.session.create({
         data: {
           userId: user.id,
         },
       });
 
-      // Set secure cookie
       const cookieStore = await cookies();
-
       cookieStore.set("session", session.id, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -95,7 +90,6 @@ export const authRouter = router({
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
       });
-
       return {
         success: true,
         user: {
@@ -107,7 +101,6 @@ export const authRouter = router({
 
   logout: publicProcedure.mutation(async () => {
     const cookieStore = await cookies();
-
     const sessionId =
       cookieStore.get("session")?.value;
 
@@ -118,9 +111,7 @@ export const authRouter = router({
         },
       });
     }
-
     cookieStore.delete("session");
-
     return {
       success: true,
     };

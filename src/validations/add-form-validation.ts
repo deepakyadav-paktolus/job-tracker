@@ -13,13 +13,18 @@ export const addFormValidation = z.object({
     .string()
     .min(3, "Role must be at least 3 characters long"),
 
-  status: z.enum([
-    "Applied",
-    "Interview",
-    "Rejected",
-    "Ghosted",
-    "Offered",
-  ]),
+status: z.enum([
+  "APPLIED",
+  "INTERVIEW",
+  "REJECTED",
+  "GHOSTED",
+  "OFFERED",
+]),
+mode: z.enum([
+  "ONSITE",
+  "REMOTE",
+  "HYBRID",
+]),
 
   appliedDate: z.date({
     error: "Applied date is required",
@@ -39,7 +44,6 @@ export const addFormValidation = z.object({
 
   notes: z.string().optional(),
 
-  mode: z.enum(["OnSite", "Remote", "Hybrid"]).optional(),
 });
 
 export type AddFormValidation = z.infer<typeof addFormValidation>;

@@ -2,16 +2,12 @@
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { ModeToggle } from "./ModeToggle";
-import { Ellipsis, Funnel, Plus, Search } from "lucide-react";
+import { Ellipsis, Funnel, Search } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "../ui/input-group";
+import {InputGroup, InputGroupAddon, InputGroupInput} from "../ui/input-group";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
-import AddForm from "../Molecules/AddForm";
+import AddForm from "../../app/form/AddForm";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -64,12 +60,11 @@ const Header = () => {
             <div className="text-4xl font-bold">Job Application Tracker</div>
             <div className="flex gap-2">
               <AddForm />
+              <AddForm />
               <Button onClick={() => toast.success("Filter applied!")}>
-                {" "}
                 <Funnel />
               </Button>
               <Button onClick={() => toast.success("More options!")}>
-                {" "}
                 <Ellipsis />
               </Button>
             </div>

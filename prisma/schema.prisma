@@ -14,7 +14,7 @@ model User {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   applications JobApplication[]
-  sessions     Session[] // ✅ ADD THIS
+  sessions     Session[]
 }
 
 model Session {
