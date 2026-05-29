@@ -1,49 +1,27 @@
-// import { NextResponse } from "next/server";
-// import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-// export function proxy(request: NextRequest) {
-//   const pathname = request.nextUrl.pathname;
+const publicRoutes = ["/login", "/signup", "/"];
+const protectedRoutes = ["/dashboard", "/profile", "/settings"];
 
-//   const isPublic =
-//     pathname === "/login" || pathname === "/signup";
-
-//   const session = request.cookies.get("session");
-
-//   if (!session && !isPublic) {
-//       console.log('no session')
-//     return NextResponse.redirect(
-//       new URL("/login", request.url)
-//     );
-//   }
-
-//   if (session && isPublic) {
-//     return NextResponse.redirect(
-//       new URL("/dashboard", request.url)
-//     );
-//   }
-
-//   return NextResponse.next();
-// }
-
-// export const config = {
-//    matcher: [
-//     "/dashboard/:path*",
-//     "/login",
-//     "/signup",
-//   ]
-// };
-
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
-// This function can be marked `async` if using `await` inside
 export function proxy(request: NextRequest) {
-  return NextResponse.redirect(new URL('/home', request.url))
+  const path = request.nextUrl.pathname;
+  const token = request.cookies.get("session")?.value;
+  const isPublicRoute = publicRoutes.includes(path);
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route)
+  );
+  if (isProtectedRoute && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (isPublicRoute && token && (path === "/login" || path === "/signup")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+  return NextResponse.next();
 }
- 
-// Alternatively, you can use a default export:
-// export default function proxy(request: NextRequest) { ... }
- 
+
 export const config = {
-  matcher: '/about/:path*',
-}
+  matcher: [
+    
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};

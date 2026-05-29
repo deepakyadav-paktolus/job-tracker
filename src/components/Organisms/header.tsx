@@ -1,75 +1,78 @@
-"use client";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { ModeToggle } from "./ModeToggle";
-import { Ellipsis, Funnel, Search } from "lucide-react";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import {InputGroup, InputGroupAddon, InputGroupInput} from "../ui/input-group";
-import { useState } from "react";
-import { trpc } from "../../utils/trpc";
+import { Ellipsis } from "lucide-react";
 import AddForm from "../../app/form/AddForm";
-import { useRouter } from "next/navigation";
-
-const Header = () => {
-  const [results, setresults] = useState<number>(0);
-  const logOutMutation = trpc.auth.logout.useMutation();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await logOutMutation.mutateAsync();
-      router.push("/login");
-      toast.success("Logout successful!");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import Nav from "../Molecules/Nav";
+import NavSearch from "../Molecules/search";
+import Link from "next/link";
+const Header = ({
+  isSubHeader = true,
+  isSearch = false,
+}: {
+  isSubHeader?: boolean;
+  isSearch?: boolean;
+}) => {
   return (
     <>
-      <div className="fixed top-0 z-20 bg-white/30 backdrop-blur-md border-b border-white/20 w-screen text-black dark:text-white dark:border-gray-700 dark:bg-black/30">
+      <div className="fixed top-0 z-20 bg-white/30 backdrop-blur-md border-b  border-white/20 w-screen text-black dark:text-white dark:border-gray-700 dark:bg-black/30">
         <div className="flex items-center h-20 border-b border-gray-200 dark:border-gray-700">
           <div className="flex justify-between px-4 w-full">
-            <div className="text-4xl font-bold">TiM</div>
+            <Link
+              href={"/dashboard"}
+              className="text-4xl cursor-pointer font-bold"
+            >
+              TiM
+            </Link>
             <div className="flex items-center gap-4">
-              <InputGroup className="max-w-xs">
-                <InputGroupInput placeholder="Search..." />
-                <InputGroupAddon>
-                  <Search />
-                </InputGroupAddon>
-                <InputGroupAddon align="inline-end">
-                  {results > 0 ? `${results} results` : ""}
-                </InputGroupAddon>
-              </InputGroup>
-              <div className="cursor-pointer">Profile</div>
-              <button onClick={handleLogout}>Logout</button>{" "}
-              <div className="cursor-pointer">Settings</div>
-              <div className="cursor-pointer">Help</div>
-              <div className="cursor-pointer">About</div>
-              <Avatar>
-                <AvatarFallback>A</AvatarFallback>
-              </Avatar>
-              <div className="cursor-pointer">
-                <ModeToggle />
+              {isSearch && <NavSearch />}
+              <Nav aria-label="Main navigation" />
+            </div>
+          </div>
+        </div>
+        {isSubHeader && (
+          <div className="h-20  flex items-center ">
+            <div className="flex w-screen justify-between items-center px-4">
+              <div className="text-4xl font-bold">Job Application Tracker</div>
+              <div className="flex gap-2">
+                <AddForm />
+                <Select aria-label="Filter applications by status">
+                  <SelectTrigger>
+                    <SelectValue
+                      className="bg text-white"
+                      placeholder="Filter"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Status</SelectLabel>
+                      <SelectItem value="ALL">All</SelectItem>
+                      <SelectItem value="APPLIED">Applied</SelectItem>
+                      <SelectItem value="INTERVIEW">Interview</SelectItem>
+                      <SelectItem value="REJECTED">Rejected</SelectItem>
+                      <SelectItem value="GHOSTED">Ghosted</SelectItem>
+                      <SelectItem value="OFFERED">Offered</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Button
+                  aria-label="More options"
+                  onClick={() => toast.success("More options!")}
+                >
+                  <Ellipsis />
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-        <div className="h-20  flex items-center ">
-          <div className="flex w-screen justify-between items-center px-4">
-            <div className="text-4xl font-bold">Job Application Tracker</div>
-            <div className="flex gap-2">
-              <AddForm />
-              <AddForm />
-              <Button onClick={() => toast.success("Filter applied!")}>
-                <Funnel />
-              </Button>
-              <Button onClick={() => toast.success("More options!")}>
-                <Ellipsis />
-              </Button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

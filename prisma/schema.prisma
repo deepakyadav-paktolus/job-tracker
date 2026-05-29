@@ -42,6 +42,9 @@ model JobApplication {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Settings{
+  
+}
 enum JobStatus {
   APPLIED
   INTERVIEW

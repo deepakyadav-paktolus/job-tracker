@@ -21,10 +21,10 @@ const Card = ({
   time,
 }: CardProps) => {
   const [bookmarked, setBookmarked] = useState(false);
-const handleBookmark = (e) => {
+const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
   e.stopPropagation(); 
-
+  setBookmarked(!bookmarked);
   console.log("Saved job:");
 }
   return (

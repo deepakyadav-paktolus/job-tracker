@@ -77,7 +77,6 @@ export function AddForm({ application }: props) {
   try {
     if (isEdit && application?.id) {
       await updateMutation.mutateAsync( data );
-
       console.log("UPDATED");
     } else {
       await createMutation.mutateAsync(data);

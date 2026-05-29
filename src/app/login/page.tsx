@@ -5,22 +5,35 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/validations/login-validation";
+import z from "zod";
+import { toast } from "sonner";
+type LoginData = z.infer<typeof LoginSchema>;
 const login = () => {
   const router = useRouter();
   const loginMutation = trpc.auth.login.useMutation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const handleLogin = async () => {
+
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(LoginSchema),
+  });
+  const handleLogin = async (data:LoginData) => {
     try {
       await loginMutation.mutateAsync({
-        email,
-        password,
+        email:data.email,
+        password:data.password
       });
 
       router.push("/dashboard");
-    } catch (error) {
-      console.error("Login failed:", error);
-      console.log(error)
+    } catch (error: any) {
+       toast.error(
+      error?.message || "Invalid email or password")
     }
   };
   return (
@@ -54,25 +67,40 @@ const login = () => {
                 Track progress from application to offer.
               </h2>
             </div>
+            <form action=""  onSubmit={handleSubmit(handleLogin)}>
             <div className="flex flex-col text-black">
               <label className="mb-2">Email</label>
               <Input
                 type="text"
                 className="border-gray-300 focus:border-gray-600 mb-4"
                 placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
+                 {...register('email')}
               />
+                       {errors.email && (
+                <p className="mb-4 text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
               <label className="mb-2">Password</label>
               <Input
                 type="password"
                 className="border-gray-300 focus:border-gray-600 mb-4"
                 placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Button className="w-full " onClick={handleLogin}>
+                {...register('password')}
+              />{errors.password && (
+                <p className=" text-sm mb-4 text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+              <Button
+                className="w-full "
+                disabled={isSubmitting || loginMutation.isPending}
+              type="submit"
+              >
                 Login
               </Button>
             </div>
+            </form>
           </div>
           <div className="flex justify-center items-center">
             <p className="text-gray-600">

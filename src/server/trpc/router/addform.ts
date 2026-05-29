@@ -69,4 +69,44 @@ export const formData = router({
       },
     });
   }),
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return db.jobApplication.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  deleteMany: publicProcedure
+    .input(z.object({ ids: z.array(z.string()) }))
+    .mutation(async ({ input }) => {
+      return db.jobApplication.deleteMany({
+        where: {
+          id: {
+            in: input.ids,
+          },
+        },
+      });
+    }),
+    searchByTitle: publicProcedure
+    .input(z.object({ title: z.string() }))
+    .query(async ({ input }) => {
+      return db.jobApplication.findMany({
+        where: {
+          jobTitle: {
+            contains: input.title,
+          },
+        },
+      });
+    }),
+    filterByStatus: publicProcedure
+    .input(z.object({ status: z.nativeEnum(JobStatus) }))
+    .query(async ({ input }) => {
+      return db.jobApplication.findMany({
+        where: {
+          status: input.status,
+        },
+      });
+    }),
 });
